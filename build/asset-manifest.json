@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "./static/css/main.59ab1ccf.chunk.css",
+    "main.js": "./static/js/main.17c9f9bf.chunk.js",
+    "main.js.map": "./static/js/main.17c9f9bf.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.46e79f63.js",
+    "runtime-main.js.map": "./static/js/runtime-main.46e79f63.js.map",
+    "static/js/2.fa8af7b8.chunk.js": "./static/js/2.fa8af7b8.chunk.js",
+    "static/js/2.fa8af7b8.chunk.js.map": "./static/js/2.fa8af7b8.chunk.js.map",
+    "index.html": "./index.html",
+    "static/css/main.59ab1ccf.chunk.css.map": "./static/css/main.59ab1ccf.chunk.css.map",
+    "static/js/2.fa8af7b8.chunk.js.LICENSE.txt": "./static/js/2.fa8af7b8.chunk.js.LICENSE.txt",
+    "static/media/cross1.efdb80d0.png": "./static/media/cross1.efdb80d0.png",
+    "static/media/cross2.f3b7448e.jpg": "./static/media/cross2.f3b7448e.jpg",
+    "static/media/prayer1.6e15678e.jpg": "./static/media/prayer1.6e15678e.jpg",
+    "static/media/zacchaeus1.d5c72a13.jpg": "./static/media/zacchaeus1.d5c72a13.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.46e79f63.js",
+    "static/js/2.fa8af7b8.chunk.js",
+    "static/css/main.59ab1ccf.chunk.css",
+    "static/js/main.17c9f9bf.chunk.js"
+  ]
+}
