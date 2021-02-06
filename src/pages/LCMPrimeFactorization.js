@@ -172,16 +172,16 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
   ];
 
   const lcmHint = [
-    "把上行所有的質因數乘起來。", 
-    "把上行所有的质因数乘起来。", 
-    "Multiply all the prime factors above.", 
+    "把上行所有的質因數乘起來。",
+    "把上行所有的质因数乘起来。",
+    "Multiply all the prime factors above.",
     "Multipliez tous les facteurs premiers ci-dessus."
   ];
 
   const lcmCorrectText = [
-    "做得好!你求得正確的L.C.M.。", 
-    "做得好!你求得正确的L.C.M.。", 
-    "Well done! You got the right L.C.M..", 
+    "做得好!你求得正確的L.C.M.。",
+    "做得好!你求得正确的L.C.M.。",
+    "Well done! You got the right L.C.M..",
     "Bien joué! Vous avez le bon L.C.M.."
   ];
 
@@ -449,7 +449,7 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
             <Grid className={classes.divisionInsideColumn}>
               {
                 firstDivisorsArray.map((divisor, index) => {
-                  return <Grid className={classes.divisionRow}>
+                  return <Grid key={index} className={classes.divisionRow}>
                     {
                       ((index < firstDivisorsArray.length - 2) || ((index == firstDivisorsArray.length - 2) && !firstDivisionCompleted)) &&
                       <Box
@@ -509,7 +509,7 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
             <Grid className={classes.divisionInsideColumn}>
               {
                 secondDivisorsArray.map((divisor, index) => {
-                  return <Grid className={classes.divisionRow}>
+                  return <Grid key={index} className={classes.divisionRow}>
                     {
                       ((index < secondDivisorsArray.length - 2) || ((index == secondDivisorsArray.length - 2) && !secondDivisionCompleted)) &&
                       <Box
@@ -576,7 +576,8 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
               </Typography>
               {
                 firstInputsArray.map((factor, index) => {
-                  return <>
+                  return <Grid key={index} style={{ display: "flex" }}>
+                    {(index > 0) && <Typography className={classes.commonText}>×</Typography>}
                     <MyInput
                       index={index}
                       setInputValue={setFirstInputsArray}
@@ -586,8 +587,7 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
                       groupType="firstFactor"
                       handleChange={handleChange}
                     />
-                    {(firstInputsArray.length - 1 > index) && <Typography className={classes.commonText}>×</Typography>}
-                  </>
+                  </Grid>
                 })
               }
             </Grid>
@@ -599,7 +599,8 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
               </Typography>
               {
                 secondInputsArray.map((factor, index) => {
-                  return <>
+                  return <Grid key={index} style={{ display: "flex" }}>
+                    {(index > 0) && <Typography className={classes.commonText}>×</Typography>}
                     <MyInput
                       index={index}
                       setInputValue={setSecondInputsArray}
@@ -609,8 +610,7 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
                       groupType="secondFactor"
                       handleChange={handleChange}
                     />
-                    {(secondInputsArray.length - 1 > index) && <Typography className={classes.commonText}>×</Typography>}
-                  </>
+                  </Grid>
                 })
               }
             </Grid>
@@ -628,7 +628,8 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
                   </Typography>
                   {
                     commonInputsArray.map((factor, index) => {
-                      return <>
+                      return <Grid key={index} style={{ display: "flex" }}>
+                        {(index > 0) && <Typography className={classes.commonText}>×</Typography>}
                         <MyInput
                           index={index}
                           setInputValue={setCommonInputsArray}
@@ -638,8 +639,7 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
                           groupType="commonFactor"
                           handleChange={handleChange}
                         />
-                        {(commonInputsArray.length - 1 > index) && <Typography className={classes.commonText}>×</Typography>}
-                      </>
+                      </Grid>
                     })
                   }
                 </Grid>

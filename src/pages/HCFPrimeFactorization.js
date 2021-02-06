@@ -145,9 +145,9 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
   ];
 
   const commonFactorHint = [
-    "由小至大找出共有的質因數。", 
-    "由小至大找出共有的质因数。", 
-    "Find the common prime factors from small to large.", 
+    "由小至大找出共有的質因數。",
+    "由小至大找出共有的质因数。",
+    "Find the common prime factors from small to large.",
     "Trouvez les facteurs premiers communs de petit à grand."
   ];
 
@@ -164,16 +164,16 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
   ];
 
   const commonFactorsCorrectText = [
-    "你成功寫出共有的質因數。", 
-    "你成功写出共有的质因数。", 
-    "You successfully write the common prime factors.", 
+    "你成功寫出共有的質因數。",
+    "你成功写出共有的质因数。",
+    "You successfully write the common prime factors.",
     "Vous écrivez avec succès les facteurs premiers communs."
   ];
 
   const hcfHint = [
-    "把上行共有的質因數乘起來。", 
-    "把上行共有的质因数乘起来。", 
-    "Multiply all the common prime factors above.", 
+    "把上行共有的質因數乘起來。",
+    "把上行共有的质因数乘起来。",
+    "Multiply all the common prime factors above.",
     "Multipliez tous les facteurs premiers communs ci-dessus."
   ];
 
@@ -185,9 +185,9 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
   ];
 
   const hcfCorrectText = [
-    "做得好!你求得正確的H.C.F.。", 
-    "做得好!你求得正确的H.C.F.。", 
-    "Well done! You got the right H.C.F..", 
+    "做得好!你求得正確的H.C.F.。",
+    "做得好!你求得正确的H.C.F.。",
+    "Well done! You got the right H.C.F..",
     "Bien joué! Vous avez le bon H.C.F.."
   ];
 
@@ -449,7 +449,7 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
         handleChange={handleChange}
         questionTextRight={questionTextRight[languageIndex]}
         okClick={okClick}
-      />      
+      />
       <AlertSnackbar
         open={openAlert}
         closeAlert={closeAlert}
@@ -463,7 +463,7 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
             <Grid className={classes.divisionInsideColumn}>
               {
                 firstDivisorsArray.map((divisor, index) => {
-                  return <Grid className={classes.divisionRow}>
+                  return <Grid key={index} className={classes.divisionRow}>
                     {
                       ((index < firstDivisorsArray.length - 2) || ((index == firstDivisorsArray.length - 2) && !firstDivisionCompleted)) &&
                       <Box
@@ -523,7 +523,7 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
             <Grid className={classes.divisionInsideColumn}>
               {
                 secondDivisorsArray.map((divisor, index) => {
-                  return <Grid className={classes.divisionRow}>
+                  return <Grid key={index} className={classes.divisionRow}>
                     {
                       ((index < secondDivisorsArray.length - 2) || ((index == secondDivisorsArray.length - 2) && !secondDivisionCompleted)) &&
                       <Box
@@ -590,7 +590,8 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
               </Typography>
               {
                 firstInputsArray.map((factor, index) => {
-                  return <>
+                  return <Grid key={index} style={{ display: "flex" }}>
+                    {(index > 0) && <Typography className={classes.commonText}>×</Typography>}
                     <MyInput
                       index={index}
                       setInputValue={setFirstInputsArray}
@@ -600,8 +601,7 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
                       groupType="firstFactor"
                       handleChange={handleChange}
                     />
-                    {(firstInputsArray.length - 1 > index) && <Typography className={classes.commonText}>×</Typography>}
-                  </>
+                  </Grid>
                 })
               }
             </Grid>
@@ -613,7 +613,8 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
               </Typography>
               {
                 secondInputsArray.map((factor, index) => {
-                  return <>
+                  return <Grid key={index} style={{ display: "flex" }}>
+                    {(index > 0) && <Typography className={classes.commonText}>×</Typography>}
                     <MyInput
                       index={index}
                       setInputValue={setSecondInputsArray}
@@ -623,8 +624,7 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
                       groupType="secondFactor"
                       handleChange={handleChange}
                     />
-                    {(secondInputsArray.length - 1 > index) && <Typography className={classes.commonText}>×</Typography>}
-                  </>
+                  </Grid>
                 })
               }
             </Grid>
@@ -642,7 +642,8 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
                   </Typography>
                   {
                     commonInputsArray.map((factor, index) => {
-                      return <>
+                      return <Grid key={index} style={{ display: "flex" }}>
+                        {(index > 0) && <Typography className={classes.commonText}>×</Typography>}
                         <MyInput
                           index={index}
                           setInputValue={setCommonInputsArray}
@@ -652,8 +653,7 @@ export const HCFPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
                           groupType="commonFactor"
                           handleChange={handleChange}
                         />
-                        {(commonInputsArray.length - 1 > index) && <Typography className={classes.commonText}>×</Typography>}
-                      </>
+                      </Grid>
                     })
                   }
                 </Grid>

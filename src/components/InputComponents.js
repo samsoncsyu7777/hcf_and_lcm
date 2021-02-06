@@ -34,7 +34,7 @@ export const MyInput = ({ index, setInputValue, focusedIndex, inputsArray, setFo
         className={classes.myInputText}
         style={{ backgroundColor: bgColor }}
         placeholder={(groupType == "inputInteger")? "1~99": ""}
-        value={inputsArray[index]}
+        value={inputsArray[index] == 0? "": inputsArray[index]}
         step="1"
         max="999"
         min="1"

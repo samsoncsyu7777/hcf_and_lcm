@@ -69,7 +69,7 @@ export const HeadingSelect = ({ selectLabel, selectIndex, setItemIndex, itemsArr
       >
         {
           itemsArray.map((language, index) => {
-            return <MenuItem className={classes.selectText} value={index}>{language}</MenuItem>
+            return <MenuItem key={index} className={classes.selectText} value={index}>{language}</MenuItem>
           })
         }
       </Select>

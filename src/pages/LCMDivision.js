@@ -122,9 +122,9 @@ export const LCMDivision = ({ languageIndex, topic, learningTool }) => {
   ];
 
   const commonFactorHint = [
-    "由小至大寫出兩數的所有因數(黃色方格)。", 
-    "由小至大写出两数的所有因数(黄色方格)。", 
-    "Write all the factors of the two numbers from small to large (yellow blocks).", 
+    "由小至大寫出兩數的所有因數(黃色方格)。",
+    "由小至大写出两数的所有因数(黄色方格)。",
+    "Write all the factors of the two numbers from small to large (yellow blocks).",
     "Écrivez tous les facteurs des deux nombres de petit à grand (blocs jaunes)."
   ];
 
@@ -133,23 +133,23 @@ export const LCMDivision = ({ languageIndex, topic, learningTool }) => {
   ];
 
   const commonFactorsCorrectText = [
-    "你成功寫出兩數的所有因數", 
-    "你成功写出两数的所有因数", 
-    "You successfully write all the factors of the two numbers.", 
+    "你成功寫出兩數的所有因數",
+    "你成功写出两数的所有因数",
+    "You successfully write all the factors of the two numbers.",
     "Vous écrivez avec succès tous les facteurs des deux nombres."
   ];
 
   const lcmHint = [
-    "把上行所有因數乘起來。", 
-    "把上行所有因数乘起来。", 
-    "Multiply all the factors above.", 
+    "把上行所有因數乘起來。",
+    "把上行所有因数乘起来。",
+    "Multiply all the factors above.",
     "Multipliez tous les facteurs ci-dessus."
   ];
 
   const lcmCorrectText = [
-    "做得好!你求得正確的L.C.M.。", 
-    "做得好!你求得正确的L.C.M.。", 
-    "Well done! You got the right L.C.M.。", 
+    "做得好!你求得正確的L.C.M.。",
+    "做得好!你求得正确的L.C.M.。",
+    "Well done! You got the right L.C.M.。",
     "Bien joué! Vous avez le bon L.C.M.。"
   ];
 
@@ -404,7 +404,7 @@ export const LCMDivision = ({ languageIndex, topic, learningTool }) => {
             <Grid className={classes.divisionInsideWideColumn}>
               {
                 divisorsArray.map((divisor, index) => {
-                  return <Grid className={classes.divisionRow}>
+                  return <Grid key={index} className={classes.divisionRow}>
                     {
                       ((index < divisorsArray.length - 2) || ((index == divisorsArray.length - 2) && !divisionCompleted)) &&
                       <Box
@@ -483,7 +483,8 @@ export const LCMDivision = ({ languageIndex, topic, learningTool }) => {
                   </Typography>
                   {
                     commonInputsArray.map((factor, index) => {
-                      return <>
+                      return <Grid key={index} style={{ display: "flex" }}>
+                        {(index > 0) && <Typography className={classes.commonText}>×</Typography>}
                         <MyInput
                           index={index}
                           setInputValue={setCommonInputsArray}
@@ -493,8 +494,7 @@ export const LCMDivision = ({ languageIndex, topic, learningTool }) => {
                           groupType="commonFactor"
                           handleChange={handleChange}
                         />
-                        {(commonInputsArray.length - 1 > index) && <Typography className={classes.commonText}>×</Typography>}
-                      </>
+                      </Grid>
                     })
                   }
                 </Grid>

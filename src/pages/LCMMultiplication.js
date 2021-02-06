@@ -279,7 +279,7 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
               </Typography>
               {
                 firstInputsArray.map((multiple, index) => {
-                  return <>
+                  return <Grid key={index} style={{display: "flex"}}>
                     <MyInput
                       index={index}
                       setInputValue={setFirstInputsArray}
@@ -290,7 +290,7 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
                       handleChange={handleChange}
                     />
                     <Typography className={classes.commonText}>{(firstInputsArray.length - 1 > index) ? "," : ",..."}</Typography>
-                  </>
+                  </Grid>
                 })
               }
             </Grid>
@@ -302,7 +302,7 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
               </Typography>
               {
                 secondInputsArray.map((multiple, index) => {
-                  return <>
+                  return <Grid key={index} style={{display: "flex"}}>
                     <MyInput
                       index={index}
                       setInputValue={setSecondInputsArray}
@@ -313,7 +313,7 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
                       handleChange={handleChange}
                     />
                     <Typography className={classes.commonText}>{(secondInputsArray.length - 1 > index) ? "," : ",..."}</Typography>
-                  </>
+                  </Grid>
                 })
               }
             </Grid>
@@ -331,7 +331,7 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
                   </Typography>
                   {
                     commonInputsArray.map((multiple, index) => {
-                      return <>
+                      return <Grid key={index} style={{display: "flex"}}>
                         <MyInput
                           index={index}
                           setInputValue={setCommonInputsArray}
@@ -342,7 +342,7 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
                           handleChange={handleChange}
                         />
                         <Typography className={classes.commonText}>{(commonInputsArray.length - 1 > index) ? "," : ",..."}</Typography>
-                      </>
+                      </Grid>
                     })
                   }
                 </Grid>

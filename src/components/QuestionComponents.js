@@ -56,7 +56,7 @@ export const MyQuestion = (props) => {
         <Typography className={classes.commonText}>{questionTextLeft}</Typography>
         {
           inputIntegersArray.map((input, index) => {
-            return <>
+            return <Grid key={index} style={{display: "flex"}}>
               <MyInput
                 index={index}
                 setInputValue={setInputIntegersArray}
@@ -68,7 +68,7 @@ export const MyQuestion = (props) => {
                 handleChange={handleChange}
               />
               {(inputIntegersArray.length - 1 > index) && <Typography className={classes.commonText}>,</Typography>}
-            </>
+            </Grid>
           })
         }
         <Typography className={classes.commonText}>{questionTextRight}</Typography>

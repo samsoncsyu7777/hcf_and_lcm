@@ -82,16 +82,16 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
   ];
 
   const commonFactorHint = [
-    "由小至大找出相同的因數。", 
-    "由小至大找出相同的因数。", 
-    "Find the common factors from small to large.", 
+    "由小至大找出相同的因數。",
+    "由小至大找出相同的因数。",
+    "Find the common factors from small to large.",
     "Trouvez les facteurs communs de petit à grand."
   ];
 
   const hcfHint = [
-    "在上行的公因數中找出最大的一個。", 
-    "在上行的公因数中找出最大的一个。", 
-    "Find the largest one among the common factors.", 
+    "在上行的公因數中找出最大的一個。",
+    "在上行的公因数中找出最大的一个。",
+    "Find the largest one among the common factors.",
     "Trouvez le plus grand parmi les facteurs communs."
   ];
 
@@ -108,16 +108,16 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
   ];
 
   const commonFactorsCorrectText = [
-    "你成功列出所有公因數。", 
-    "你成功列出所有公因数。", 
-    "You successfully list all common factors.", 
+    "你成功列出所有公因數。",
+    "你成功列出所有公因数。",
+    "You successfully list all common factors.",
     "Vous avez réussi à répertorier tous les facteurs communs."
   ];
 
   const hcfCorrectText = [
-    "做得好!你求得正確的H.C.F.。", 
-    "做得好!你求得正确的H.C.F.。", 
-    "Well done! You got the right H.C.F..", 
+    "做得好!你求得正確的H.C.F.。",
+    "做得好!你求得正确的H.C.F.。",
+    "Well done! You got the right H.C.F..",
     "Bien joué! Vous avez le bon H.C.F.."
   ];
 
@@ -279,7 +279,7 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
         handleChange={handleChange}
         questionTextRight={questionTextRight[languageIndex]}
         okClick={okClick}
-      />      
+      />
       <AlertSnackbar
         open={openAlert}
         closeAlert={closeAlert}
@@ -295,7 +295,7 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
               </Typography>
               {
                 firstInputsArray.map((factor, index) => {
-                  return <>
+                  return <Grid key={index} style={{ display: "flex" }}>
                     <MyInput
                       index={index}
                       setInputValue={setFirstInputsArray}
@@ -306,7 +306,7 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
                       handleChange={handleChange}
                     />
                     {(firstInputsArray.length - 1 > index) && <Typography className={classes.commonText}>,</Typography>}
-                  </>
+                  </Grid>
                 })
               }
             </Grid>
@@ -318,7 +318,7 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
               </Typography>
               {
                 secondInputsArray.map((factor, index) => {
-                  return <>
+                  return <Grid key={index} style={{ display: "flex" }}>
                     <MyInput
                       index={index}
                       setInputValue={setSecondInputsArray}
@@ -329,7 +329,7 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
                       handleChange={handleChange}
                     />
                     {(secondInputsArray.length - 1 > index) && <Typography className={classes.commonText}>,</Typography>}
-                  </>
+                  </Grid>
                 })
               }
             </Grid>
@@ -347,7 +347,7 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
                   </Typography>
                   {
                     commonInputsArray.map((factor, index) => {
-                      return <>
+                      return <Grid key={index} style={{ display: "flex" }}>
                         <MyInput
                           index={index}
                           setInputValue={setCommonInputsArray}
@@ -358,7 +358,7 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
                           handleChange={handleChange}
                         />
                         {(commonInputsArray.length - 1 > index) && <Typography className={classes.commonText}>,</Typography>}
-                      </>
+                      </Grid>
                     })
                   }
                 </Grid>

@@ -8,7 +8,7 @@ import {
 } from "../components/MathsLearningComponents";
 import {
   HCFFactorization,
-} from "../pages/HCFFactorization";
+} from "./HCFFactorization";
 import {
   LCMMultiplication,
 } from "./LCMMultiplication";
