@@ -1,5 +1,4 @@
 import { makeStyles} from "@material-ui/core/styles";
-import { theme as myTheme } from "../themes/theme";
 
 export const pagesStyles = makeStyles((theme) => ({
   centerRow: {
@@ -31,6 +30,9 @@ export const pagesStyles = makeStyles((theme) => ({
   divisionRow: {
     display: "flex",
     justifyContent: "flex-end",
+  },
+  spaceGrid: {
+    height: "2vw",
   },
   factorsRows: {
     width: "80vw",

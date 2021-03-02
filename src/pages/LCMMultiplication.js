@@ -3,11 +3,15 @@ import {
   Grid,
   Paper,
   Typography,
+  Button,
 } from "@material-ui/core";
 import { MyInput } from "../components/InputComponents";
 import { AlertSnackbar } from "../components/AlertComponents";
 import { MyFrame } from "../components/HeadingComponents";
 import { MyQuestion } from "../components/QuestionComponents";
+import { StageButtons } from "../components/StageComponents";
+import questions from "../questions/Questions";
+import ForwardRoundedIcon from '@material-ui/icons/ForwardRounded';
 import { calculateMultiples, calculateResults } from "../functions/LCMFunctions";
 import { pagesStyles } from "../themes/styles";
 
@@ -34,7 +38,12 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
   const [lcmResultArray, setLcmResultArray] = useState([null]);
   const [lcmInputArray, setLcmInputArray] = useState([null]);
   const [lcmArrayFocusedIndex, setLcmArrayFocusedIndex] = useState(0);
+  const [wholeCompleted, setWholeCompleted] = useState(false);
+  const [stageOrder, setStageOrder] = useState({ stage: 0, order: 0 });
   const timeDelay = 200;
+
+  const stageText = ["階段", "阶段", "Stage", "Étape"];
+  const manual = ["自擬題目", "自拟题目", "Personal Task", "Tâche personnelle"];
 
   const mustBeIntegerMessages = [
     "輸入的數必須是整數。",
@@ -82,16 +91,16 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
   ];
 
   const commonMultipleHint = [
-    "由小至大找出相同的倍數。", 
-    "由小至大找出相同的倍数。", 
-    "Find the common multiples from small to large.", 
+    "由小至大找出相同的倍數。",
+    "由小至大找出相同的倍数。",
+    "Find the common multiples from small to large.",
     "Trouvez les multiples communs de petit à grand."
   ];
 
   const lcmHint = [
-    "在上行的公倍數中找出最小的一個。", 
-    "在上行的公倍数中找出最小的一个。", 
-    "Find the smallest one among the common multiples.", 
+    "在上行的公倍數中找出最小的一個。",
+    "在上行的公倍数中找出最小的一个。",
+    "Find the smallest one among the common multiples.",
     "Trouvez le plus petit parmi les multiples communs."
   ];
 
@@ -108,22 +117,81 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
   ];
 
   const commonMultiplesCorrectText = [
-    "你成功列出所有公倍數。", 
-    "你成功列出所有公倍数。", 
-    "You successfully list all common multiples.", 
+    "你成功列出所有公倍數。",
+    "你成功列出所有公倍数。",
+    "You successfully list all common multiples.",
     "Vous avez réussi à répertorier tous les multiples communs."
   ];
 
   const lcmCorrectText = [
-    "做得好!你求得正確的L.C.M.。", 
-    "做得好!你求得正确的L.C.M.。", 
-    "Well done! You got the right L.C.M..", 
+    "做得好!你求得正確的L.C.M.。",
+    "做得好!你求得正确的L.C.M.。",
+    "Well done! You got the right L.C.M..",
     "Bien joué! Vous avez le bon L.C.M.."
   ];
 
   useEffect(() => {
-
+    if (questions.length === 0) {
+      if (stageOrder === { stage: -1, order: 0 }) {
+        setInputIntegersArray([null, null]);
+      } else {
+        setStageOrder({ stage: -1, order: 0 });
+      }
+    } else {
+      if (stageOrder === { stage: 0, order: 0 }) {
+        setQuestion(stageOrder.stage, stageOrder.order);
+      } else {
+        setStageOrder({ stage: 0, order: 0 });
+      }
+    }
   }, []);
+
+  useEffect(() => {
+    setShowMultipleRows(false);
+    setShowResult(false);
+    if (stageOrder.stage > -1) {
+      setQuestion(stageOrder.stage, stageOrder.order);
+    } else {
+      setInputIntegersArray([0, 0]);
+    }
+  }, [stageOrder]);
+
+  const handleStageClick = (stage) => {
+    setStageOrder({ stage: stage, order: 0 });
+  };
+
+  const setQuestion = (
+    stage,
+    order
+  ) => {
+    setInputIntegersArray(questions[stage][order])
+  };
+
+  useEffect(() => {
+    if (stageOrder.stage > -1 && inputIntegersArray[1] != null) {
+      okClick();
+    }
+  }, [inputIntegersArray])
+
+  function nextClick() {
+    if (stageOrder.stage > -1) {
+      if (
+        stageOrder.order <
+        questions[stageOrder.stage].length - 1
+      ) {
+        setStageOrder({ stage: stageOrder.stage, order: stageOrder.order + 1 });
+      } else if (
+        stageOrder.stage <
+        questions.length - 1
+      ) {
+        setStageOrder({ stage: stageOrder.stage + 1, order: 0 });
+      } else {
+        setStageOrder({ stage: -1, order: 0 });
+      }
+    } else {
+      setInputIntegersArray([0, 0]);
+    }
+  }
 
   const closeAlert = (e) => {
     setOpenAlert(false);
@@ -160,6 +228,7 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
     if (value == multiplesArray[index]) {
       if (groupType == "lcm") {
         setErrorMessage("👍🏻" + lcmCorrectText[languageIndex]);
+        setWholeCompleted(true);
         setTimeout(() => {
           setOpenAlert(true);
         }, timeDelay);
@@ -183,6 +252,9 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
         }
       } else {
         setAnswerFocusedIndex(index + 1);
+        setTimeout(() => {
+          setOpenAlert(false);
+        }, timeDelay);
       }
     } else {
       setOpenAlert(false);
@@ -235,6 +307,7 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
       setCommonArrayFocusedIndex(0);
       setLcmInputArray([null]);
       setLcmArrayFocusedIndex(0);
+      setWholeCompleted(false);
       var { multiplesArray, inputsArray } = calculateMultiples(inputIntegersArray[0], inputIntegersArray[1]);
       setFirstMultiplesArray(multiplesArray);
       setFirstInputsArray(inputsArray);
@@ -254,6 +327,17 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
 
   return (
     <MyFrame topic={topic} learningTool={learningTool}>
+      <Grid className={classes.spaceGrid} />
+      {questions.length > 0 && (
+        <StageButtons
+          stageText={stageText[languageIndex] + "："}
+          stages={Object.keys(questions)}
+          handleStageClick={handleStageClick}
+          stageState={stageOrder.stage}
+          manual={manual[languageIndex]}
+        />
+      )}
+      <Grid className={classes.spaceGrid} />
       <MyQuestion
         questionTextLeft={questionTextLeft[languageIndex]}
         setInputIntegersArray={setInputIntegersArray}
@@ -279,7 +363,7 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
               </Typography>
               {
                 firstInputsArray.map((multiple, index) => {
-                  return <Grid key={index} style={{display: "flex"}}>
+                  return <Grid key={index} style={{ display: "flex" }}>
                     <MyInput
                       index={index}
                       setInputValue={setFirstInputsArray}
@@ -302,7 +386,7 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
               </Typography>
               {
                 secondInputsArray.map((multiple, index) => {
-                  return <Grid key={index} style={{display: "flex"}}>
+                  return <Grid key={index} style={{ display: "flex" }}>
                     <MyInput
                       index={index}
                       setInputValue={setSecondInputsArray}
@@ -331,7 +415,7 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
                   </Typography>
                   {
                     commonInputsArray.map((multiple, index) => {
-                      return <Grid key={index} style={{display: "flex"}}>
+                      return <Grid key={index} style={{ display: "flex" }}>
                         <MyInput
                           index={index}
                           setInputValue={setCommonInputsArray}
@@ -359,6 +443,14 @@ export const LCMMultiplication = ({ languageIndex, topic, learningTool }) => {
                     groupType="lcm"
                     handleChange={handleChange}
                   />
+                  {
+                    wholeCompleted && <Button
+                      className={classes.okButton}
+                      variant="contained"
+                      onClick={nextClick}
+                      color="primary"
+                    ><ForwardRoundedIcon className={classes.resetArrow} /></Button>
+                  }
                 </Grid>
               </Paper>
             </Grid>

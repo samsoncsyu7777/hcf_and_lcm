@@ -10,6 +10,9 @@ import { MyInput } from "../components/InputComponents";
 import { AlertSnackbar } from "../components/AlertComponents";
 import { MyFrame } from "../components/HeadingComponents";
 import { MyQuestion } from "../components/QuestionComponents";
+import { StageButtons } from "../components/StageComponents";
+import questions from "../questions/Questions";
+import ForwardRoundedIcon from '@material-ui/icons/ForwardRounded';
 import { calculateFactors } from "../functions/HCFPrimeFunctions";
 import { calculateResults } from "../functions/LCMPrimeFunctions";
 import { getPrimeNumbers } from "../functions/PrimeNumbersFunctions";
@@ -50,7 +53,12 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
   const [lcmInputArray, setLcmInputArray] = useState([null]);
   const [lcmArrayFocusedIndex, setLcmArrayFocusedIndex] = useState(0);
   const [primeNumbers, setPrimeNumbers] = useState([]);
+  const [wholeCompleted, setWholeCompleted] = useState(false);
+  const [stageOrder, setStageOrder] = useState({ stage: 0, order: 0 });
   const timeDelay = 200;
+
+  const stageText = ["階段", "阶段", "Stage", "Étape"];
+  const manual = ["自擬題目", "自拟题目", "Personal Task", "Tâche personnelle"];
 
   const mustBeIntegerMessages = [
     "輸入的數必須是整數。",
@@ -187,7 +195,68 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
 
   useEffect(() => {
     setPrimeNumbers(getPrimeNumbers());
+    if (questions.length === 0) {
+      if (stageOrder === { stage: -1, order: 0 }) {
+        setInputIntegersArray([null, null]);
+      } else {
+        setStageOrder({ stage: -1, order: 0 });
+      }
+    } else {
+      if (stageOrder === { stage: 0, order: 0 }) {
+        setQuestion(stageOrder.stage, stageOrder.order);
+      } else {
+        setStageOrder({ stage: 0, order: 0 });
+      }
+    }
   }, []);
+
+  useEffect(() => {
+    setShowDivisionColomns(false);
+    setShowFactorsColomns(false);
+    setShowResult(false);
+    if (stageOrder.stage > -1) {
+      setQuestion(stageOrder.stage, stageOrder.order);
+    } else {
+      setInputIntegersArray([0, 0]);
+    }
+  }, [stageOrder]);
+
+  const handleStageClick = (stage) => {
+    setStageOrder({ stage: stage, order: 0 });
+  };
+
+  const setQuestion = (
+    stage,
+    order
+  ) => {
+    setInputIntegersArray(questions[stage][order])
+  };
+
+  useEffect(() => {
+    if (stageOrder.stage > -1 && inputIntegersArray[1] != null) {
+      okClick();
+    }
+  }, [inputIntegersArray])
+
+  function nextClick() {
+    if (stageOrder.stage > -1) {
+      if (
+        stageOrder.order <
+        questions[stageOrder.stage].length - 1
+      ) {
+        setStageOrder({ stage: stageOrder.stage, order: stageOrder.order + 1 });
+      } else if (
+        stageOrder.stage <
+        questions.length - 1
+      ) {
+        setStageOrder({ stage: stageOrder.stage + 1, order: 0 });
+      } else {
+        setStageOrder({ stage: -1, order: 0 });
+      }
+    } else {
+      setInputIntegersArray([0, 0]);
+    }
+  }
 
   const closeAlert = (e) => {
     setOpenAlert(false);
@@ -235,10 +304,11 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
 
   function checkDivisor(index, value, quotient, setAnswerFocusedIndex) {
     //correct divisor
-    if (quotient % value == 0) {//} && value > 1 && value < quotient) {
+    if (quotient % value == 0) {
       if (primeNumbers.includes(parseInt(value))) {
         setTimeout(() => {
           setAnswerFocusedIndex(index + 1);
+          setOpenAlert(false);
         }, timeDelay);
       } else {
         //not a prime factor
@@ -277,7 +347,8 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
           setDivisorsArray(tmpDivisorsArray);
           setQuotientsArray(tmpQuotientsArray);
           setAnswerFocusedIndex(index + 1);
-        }, 200);
+          setOpenAlert(false);
+        }, timeDelay);
       } else {
         //incorrect quotient
         setOpenAlert(false);
@@ -297,6 +368,7 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
     if (value == factorsArray[index]) {
       if (groupType == "lcm") {
         setErrorMessage("👍🏻" + lcmCorrectText[languageIndex]);
+        setWholeCompleted(true);
         setTimeout(() => {
           setOpenAlert(true);
         }, timeDelay);
@@ -321,6 +393,9 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
           }
         } else {
           setAnswerFocusedIndex(index + 1);
+          setTimeout(() => {
+            setOpenAlert(false);
+          }, timeDelay);
         }
       }
       //incorrect factor
@@ -402,6 +477,7 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
       setCommonArrayFocusedIndex(0);
       setLcmInputArray([null]);
       setLcmArrayFocusedIndex(0);
+      setWholeCompleted(false);
       var { factorsArray, inputsArray } = calculateFactors(inputIntegersArray[0], primeNumbers);
       setFirstFactorsArray(factorsArray);
       setFirstInputsArray(inputsArray);
@@ -426,6 +502,17 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
 
   return (
     <MyFrame topic={topic} learningTool={learningTool}>
+      <Grid className={classes.spaceGrid} />
+      {questions.length > 0 && (
+        <StageButtons
+          stageText={stageText[languageIndex] + "："}
+          stages={Object.keys(questions)}
+          handleStageClick={handleStageClick}
+          stageState={stageOrder.stage}
+          manual={manual[languageIndex]}
+        />
+      )}
+      <Grid className={classes.spaceGrid} />
       <MyQuestion
         questionTextLeft={questionTextLeft[languageIndex]}
         setInputIntegersArray={setInputIntegersArray}
@@ -656,6 +743,14 @@ export const LCMPrimeFactorization = ({ languageIndex, topic, learningTool }) =>
                     groupType="lcm"
                     handleChange={handleChange}
                   />
+                  {
+                    wholeCompleted && <Button
+                      className={classes.okButton}
+                      variant="contained"
+                      onClick={nextClick}
+                      color="primary"
+                    ><ForwardRoundedIcon className={classes.resetArrow} /></Button>
+                  }
                 </Grid>
               </Paper>
             </Grid>

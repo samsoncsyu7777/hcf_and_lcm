@@ -3,11 +3,15 @@ import {
   Grid,
   Paper,
   Typography,
+  Button,
 } from "@material-ui/core";
 import { MyInput } from "../components/InputComponents";
 import { AlertSnackbar } from "../components/AlertComponents";
 import { MyFrame } from "../components/HeadingComponents";
 import { MyQuestion } from "../components/QuestionComponents";
+import { StageButtons } from "../components/StageComponents";
+import questions from "../questions/Questions";
+import ForwardRoundedIcon from '@material-ui/icons/ForwardRounded';
 import { calculateFactors, calculateResults } from "../functions/HCFFunctions";
 import { pagesStyles } from "../themes/styles";
 
@@ -34,7 +38,12 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
   const [hcfResultArray, setHcfResultArray] = useState([null]);
   const [hcfInputArray, setHcfInputArray] = useState([null]);
   const [hcfArrayFocusedIndex, setHcfArrayFocusedIndex] = useState(0);
+  const [wholeCompleted, setWholeCompleted] = useState(false);
+  const [stageOrder, setStageOrder] = useState({ stage: 0, order: 0 });
   const timeDelay = 200;
+
+  const stageText = ["階段", "阶段", "Stage", "Étape"];
+  const manual = ["自擬題目", "自拟题目", "Personal Task", "Tâche personnelle"];
 
   const mustBeIntegerMessages = [
     "輸入的數必須是整數。",
@@ -122,8 +131,67 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
   ];
 
   useEffect(() => {
-
+    if (questions.length === 0) {
+      if (stageOrder === { stage: -1, order: 0 }) {
+        setInputIntegersArray([null, null]);
+      } else {
+        setStageOrder({ stage: -1, order: 0 });
+      }
+    } else {
+      if (stageOrder === { stage: 0, order: 0 }) {
+        setQuestion(stageOrder.stage, stageOrder.order);
+      } else {
+        setStageOrder({ stage: 0, order: 0 });
+      }
+    }
   }, []);
+
+  useEffect(() => {
+    setShowFactorRows(false);
+    setShowResult(false);
+    if (stageOrder.stage > -1) {
+      setQuestion(stageOrder.stage, stageOrder.order);
+    } else {
+      setInputIntegersArray([0, 0]);
+    }
+  }, [stageOrder]);
+
+  const handleStageClick = (stage) => {
+    setStageOrder({ stage: stage, order: 0 });
+  };
+
+  const setQuestion = (
+    stage,
+    order
+  ) => {
+    setInputIntegersArray(questions[stage][order])
+  };
+
+  useEffect(() => {
+    if (stageOrder.stage > -1 && inputIntegersArray[1] != null) {
+      okClick();
+    }
+  }, [inputIntegersArray])
+
+  function nextClick() {
+    if (stageOrder.stage > -1) {
+      if (
+        stageOrder.order <
+        questions[stageOrder.stage].length - 1
+      ) {
+        setStageOrder({ stage: stageOrder.stage, order: stageOrder.order + 1 });
+      } else if (
+        stageOrder.stage <
+        questions.length - 1
+      ) {
+        setStageOrder({ stage: stageOrder.stage + 1, order: 0 });
+      } else {
+        setStageOrder({ stage: -1, order: 0 });
+      }
+    } else {
+      setInputIntegersArray([0, 0]);
+    }
+  }
 
   const closeAlert = (e) => {
     setOpenAlert(false);
@@ -161,6 +229,7 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
     if (value == factorsArray[index]) {
       if (groupType == "hcf") {
         setErrorMessage("👍🏻" + hcfCorrectText[languageIndex]);
+        setWholeCompleted(true);
         setTimeout(() => {
           setOpenAlert(true);
         }, timeDelay);
@@ -176,6 +245,7 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
           setAnswerFocusedIndex(-1);
         } else {
           setAnswerFocusedIndex(index + 1);
+          setOpenAlert(false);
         }
       } else if (index == Math.round((factorsArray.length - 1) / 2)) {
         setErrorMessage("👍🏻" + factorsCorrectTextLeft[languageIndex] + factorsArray[factorsArray.length - 1] + factorsCorrectTextRight[languageIndex]);
@@ -190,6 +260,9 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
           setNumberOfArraysCorrect(numberOfArraysCorrect + 1);
         }
       } else {
+        setTimeout(() => {
+          setOpenAlert(false);
+        }, timeDelay);
         if (index < Math.round((factorsArray.length - 1) / 2)) {
           setAnswerFocusedIndex(factorsArray.length - index - 1);
         } else if (index > Math.round((factorsArray.length - 1) / 2)) {
@@ -251,6 +324,7 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
       setCommonArrayFocusedIndex(0);
       setHcfInputArray([null]);
       setHcfArrayFocusedIndex(0);
+      setWholeCompleted(false);
       var { factorsArray, inputsArray } = calculateFactors(inputIntegersArray[0]);
       setFirstFactorsArray(factorsArray);
       setFirstInputsArray(inputsArray);
@@ -270,6 +344,17 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
 
   return (
     <MyFrame topic={topic} learningTool={learningTool}>
+      <Grid className={classes.spaceGrid} />
+      {questions.length > 0 && (
+        <StageButtons
+          stageText={stageText[languageIndex] + "："}
+          stages={Object.keys(questions)}
+          handleStageClick={handleStageClick}
+          stageState={stageOrder.stage}
+          manual={manual[languageIndex]}
+        />
+      )}
+      <Grid className={classes.spaceGrid} />
       <MyQuestion
         questionTextLeft={questionTextLeft[languageIndex]}
         setInputIntegersArray={setInputIntegersArray}
@@ -375,6 +460,14 @@ export const HCFFactorization = ({ languageIndex, topic, learningTool }) => {
                     groupType="hcf"
                     handleChange={handleChange}
                   />
+                  {
+                    wholeCompleted && <Button
+                      className={classes.okButton}
+                      variant="contained"
+                      onClick={nextClick}
+                      color="primary"
+                    ><ForwardRoundedIcon className={classes.resetArrow} /></Button>
+                  }
                 </Grid>
               </Paper>
             </Grid>

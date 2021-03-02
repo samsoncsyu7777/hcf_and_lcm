@@ -10,8 +10,11 @@ import { MyInput } from "../components/InputComponents";
 import { AlertSnackbar } from "../components/AlertComponents";
 import { MyFrame } from "../components/HeadingComponents";
 import { MyQuestion } from "../components/QuestionComponents";
+import { StageButtons } from "../components/StageComponents";
+import questions from "../questions/Questions";
 import { calculateFactors, calculateResults } from "../functions/HCFPrimeFunctions";
 import { getPrimeNumbers } from "../functions/PrimeNumbersFunctions";
+import ForwardRoundedIcon from '@material-ui/icons/ForwardRounded';
 import { pagesStyles } from "../themes/styles";
 
 //×÷👍👍🏻
@@ -38,7 +41,12 @@ export const HCFDivision = ({ languageIndex, topic, learningTool }) => {
   const [hcfInputArray, setHcfInputArray] = useState([null]);
   const [hcfArrayFocusedIndex, setHcfArrayFocusedIndex] = useState(0);
   const [primeNumbers, setPrimeNumbers] = useState([]);
+  const [wholeCompleted, setWholeCompleted] = useState(false);
+  const [stageOrder, setStageOrder] = useState({ stage: 0, order: 0 });
   const timeDelay = 200;
+
+  const stageText = ["階段", "阶段", "Stage", "Étape"];
+  const manual = ["自擬題目", "自拟题目", "Personal Task", "Tâche personnelle"];
 
   const mustBeIntegerMessages = [
     "輸入的數必須是整數。",
@@ -162,7 +170,67 @@ export const HCFDivision = ({ languageIndex, topic, learningTool }) => {
 
   useEffect(() => {
     setPrimeNumbers(getPrimeNumbers());
+    if (questions.length === 0) {
+      if (stageOrder === { stage: -1, order: 0 }) {
+        setInputIntegersArray([null, null]);
+      } else {
+        setStageOrder({ stage: -1, order: 0 });
+      }
+    } else {
+      if (stageOrder === { stage: 0, order: 0 }) {
+        setQuestion(stageOrder.stage, stageOrder.order);
+      } else {
+        setStageOrder({ stage: 0, order: 0 });
+      }
+    }
   }, []);
+
+  useEffect(() => {
+    setShowDivisionColomns(false);
+    setShowResult(false);
+    if (stageOrder.stage > -1) {
+      setQuestion(stageOrder.stage, stageOrder.order);
+    } else {
+      setInputIntegersArray([0, 0]);
+    }
+  }, [stageOrder]);
+
+  const handleStageClick = (stage) => {
+    setStageOrder({ stage: stage, order: 0 });
+  };
+
+  const setQuestion = (
+    stage,
+    order
+  ) => {
+    setInputIntegersArray(questions[stage][order])
+  };
+
+  useEffect(() => {
+    if (stageOrder.stage > -1 && inputIntegersArray[1] != null) {
+      okClick();
+    }
+  }, [inputIntegersArray])
+
+  function nextClick() {
+    if (stageOrder.stage > -1) {
+      if (
+        stageOrder.order <
+        questions[stageOrder.stage].length - 1
+      ) {
+        setStageOrder({ stage: stageOrder.stage, order: stageOrder.order + 1 });
+      } else if (
+        stageOrder.stage <
+        questions.length - 1
+      ) {
+        setStageOrder({ stage: stageOrder.stage + 1, order: 0 });
+      } else {
+        setStageOrder({ stage: -1, order: 0 });
+      }
+    } else {
+      setInputIntegersArray([0, 0]);
+    }
+  }
 
   const closeAlert = (e) => {
     setOpenAlert(false);
@@ -200,10 +268,11 @@ export const HCFDivision = ({ languageIndex, topic, learningTool }) => {
 
   function checkDivisor(index, value, firstQuotient, secondQuotient, setAnswerFocusedIndex) {
     //correct divisor
-    if (firstQuotient % value == 0 && secondQuotient % value == 0) {//} && value > 1 && value < quotient) {
+    if (firstQuotient % value == 0 && secondQuotient % value == 0) {
       if (primeNumbers.includes(parseInt(value))) {
         setTimeout(() => {
           setAnswerFocusedIndex(index + 1);
+          setOpenAlert(false);
         }, 50);
       } else {
         //not a prime factor
@@ -232,6 +301,9 @@ export const HCFDivision = ({ languageIndex, topic, learningTool }) => {
   function checkQuotient(index, value, divisorsArray, quotientsArray, setDivisorsArray, setQuotientsArray, setAnswerFocusedIndex, anotherQuotientsArray, setAnotherQuotientsArray, setAnotherQuotientFocusedIndex) {
     if (divisorFocusedIndex == index) {
       //correct quotient
+      setTimeout(() => {
+        setOpenAlert(false);
+      }, timeDelay);
       if (value == quotientsArray[index - 1] / divisorsArray[index - 1] && divisorsArray[index - 1] != 1) {
         if (numberOfQuotientCorrect == 0) {
           setNumberOfQuotientCorrect(1);
@@ -272,6 +344,7 @@ export const HCFDivision = ({ languageIndex, topic, learningTool }) => {
     if (value == factorsArray[index]) {
       if (groupType == "hcf") {
         setErrorMessage("👍🏻" + hcfCorrectText[languageIndex]);
+        setWholeCompleted(true);
         setTimeout(() => {
           setOpenAlert(true);
         }, timeDelay);
@@ -286,6 +359,9 @@ export const HCFDivision = ({ languageIndex, topic, learningTool }) => {
         setErrorMessage("👍🏻" + commonFactorsCorrectText[languageIndex]);
       } else {
         setAnswerFocusedIndex(index + 1);
+        setTimeout(() => {
+          setOpenAlert(false);
+        }, timeDelay);
       }
       //incorrect factor
     } else {
@@ -347,43 +423,59 @@ export const HCFDivision = ({ languageIndex, topic, learningTool }) => {
         setOpenAlert(true);
       }, timeDelay);
     } else {
-      setOpenAlert(false);
-      setShowDivisionColomns(false);
-      setTimeout(() => {
-        setShowDivisionColomns(true);
-      }, timeDelay);
-      setDivisorsArray([null, null]);
-      setFirstQuotientsArray([inputIntegersArray[0], null]);
-      setSecondQuotientsArray([inputIntegersArray[1], null]);
-      setDivisorFocusedIndex(0);
-      setFirstQuotientFocusedIndex(1);
-      setSecondQuotientFocusedIndex(1);
-      setNumberOfQuotientCorrect(0);
-      setDivisionCompleted(false);
-      setShowResult(false);
-      setCommonArrayFocusedIndex(0);
-      setHcfInputArray([null]);
-      setHcfArrayFocusedIndex(0);
-      var { factorsArray, inputsArray } = calculateFactors(inputIntegersArray[0], primeNumbers);
-      var factorsArray0 = factorsArray;
-      var { factorsArray, inputsArray } = calculateFactors(inputIntegersArray[1], primeNumbers);
-      var factorsArray1 = factorsArray;
-      var { factorsArray, inputsArray } = calculateResults(factorsArray0, factorsArray1);
-      setCommonFactorsArray(factorsArray);
-      setCommonInputsArray(inputsArray);
-      var tmpHcf = 1;
-      var i;
-      for (i = 0; i < factorsArray.length; i++) {
-        tmpHcf *= factorsArray[i];
-      }
-      setHcfResultArray([tmpHcf]);
+      okReset();
     }
+  };
+
+  function okReset() {
+    setOpenAlert(false);
+    setShowDivisionColomns(false);
+    setTimeout(() => {
+      setShowDivisionColomns(true);
+    }, timeDelay);
+    setDivisorsArray([null, null]);
+    setFirstQuotientsArray([inputIntegersArray[0], null]);
+    setSecondQuotientsArray([inputIntegersArray[1], null]);
+    setDivisorFocusedIndex(0);
+    setFirstQuotientFocusedIndex(1);
+    setSecondQuotientFocusedIndex(1);
+    setNumberOfQuotientCorrect(0);
+    setDivisionCompleted(false);
+    setShowResult(false);
+    setCommonArrayFocusedIndex(0);
+    setHcfInputArray([null]);
+    setHcfArrayFocusedIndex(0);
+    setWholeCompleted(false);
+    var { factorsArray, inputsArray } = calculateFactors(inputIntegersArray[0], primeNumbers);
+    var factorsArray0 = factorsArray;
+    var { factorsArray, inputsArray } = calculateFactors(inputIntegersArray[1], primeNumbers);
+    var factorsArray1 = factorsArray;
+    var { factorsArray, inputsArray } = calculateResults(factorsArray0, factorsArray1);
+    setCommonFactorsArray(factorsArray);
+    setCommonInputsArray(inputsArray);
+    var tmpHcf = 1;
+    var i;
+    for (i = 0; i < factorsArray.length; i++) {
+      tmpHcf *= factorsArray[i];
+    }
+    setHcfResultArray([tmpHcf]);
   };
 
   const classes = pagesStyles();
 
   return (
     <MyFrame topic={topic} learningTool={learningTool}>
+      <Grid className={classes.spaceGrid} />
+      {questions.length > 0 && (
+        <StageButtons
+          stageText={stageText[languageIndex] + "："}
+          stages={Object.keys(questions)}
+          handleStageClick={handleStageClick}
+          stageState={stageOrder.stage}
+          manual={manual[languageIndex]}
+        />
+      )}
+      <Grid className={classes.spaceGrid} />
       <MyQuestion
         questionTextLeft={questionTextLeft[languageIndex]}
         setInputIntegersArray={setInputIntegersArray}
@@ -514,6 +606,14 @@ export const HCFDivision = ({ languageIndex, topic, learningTool }) => {
                     groupType="hcf"
                     handleChange={handleChange}
                   />
+                  {
+                    wholeCompleted && <Button
+                      className={classes.okButton}
+                      variant="contained"
+                      onClick={nextClick}
+                      color="primary"
+                    ><ForwardRoundedIcon className={classes.resetArrow} /></Button>
+                  }
                 </Grid>
               </Paper>
             </Grid>
